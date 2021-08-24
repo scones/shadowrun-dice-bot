@@ -5,11 +5,13 @@ class Bot::Commands::Abstract
     @arguments = arguments
   end
 
-  def command_name
-    self.class.name.underscore.gsub(/^(.*)\//, '')
+  def self.command_name
+    self.name.underscore.gsub(/^(.*)\//, '')
   end
 
-  def dice
-    @dice ||= Dice.new
+  def post_format response
+    response = response.split("\n").map(&:strip).join("\n")
+    response += "\n" unless "\n" == response[-1]
   end
+
 end

@@ -11,8 +11,8 @@ class Bot::Parser
     validate
 
     command.execute
-  rescue => e
-    e.message
+  # rescue => e
+  #   e.message
   end
 
 

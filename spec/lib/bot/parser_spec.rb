@@ -7,7 +7,7 @@ RSpec.describe Bot::Parser do
   let (:dice) { double(Dice) }
 
   before :each do
-    allow_any_instance_of(Bot::Commands::Abstract).to receive(:dice).and_return(dice)
+    allow_any_instance_of(Bot::Roll).to receive(:dice).and_return(dice)
   end
 
   describe '#response' do
@@ -171,6 +171,23 @@ RSpec.describe Bot::Parser do
                     failure
                   RESULT
                 end
+              end
+            end
+          end
+
+          context 'WHEN there is a fate dice requested' do
+            let (:dice_count) { 15}
+            let (:message) { "/sr #{dice_count}+" }
+
+            context 'WHEN the fate says yes' do
+              it 'SHOULD produce extra hits' do
+                expect(dice).to receive(:roll_6).with(dice_count).and_return([2, 3, 2, 2, 2, 2, 2, 2, 3, 5, 5, 2, 1, 5, 5])
+
+                expect(subject).to eq <<~RESULT
+                  /sr #{dice_count}+
+                  Roll: 2 3 2 2 2 2 2 2 3 5 5 2 1 5 5
+                  Hits: 6
+                RESULT
               end
             end
           end

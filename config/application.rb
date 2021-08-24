@@ -30,8 +30,8 @@ module ShadowrunDiceBot
     config.generators.system_tests = nil
 
     config.eager_load = true
-Rails.autoloaders.log!
-Rails.autoloaders.logger = Logger.new("#{Rails.root}/log/autoloading.log")
+    Rails.autoloaders.log!
+    Rails.autoloaders.logger = Logger.new("#{Rails.root}/log/autoloading.log")
 
     ['lib', 'jobs', 'jobs/telegram'].each do |path|
       full_path = Rails.root.join path
@@ -47,5 +47,6 @@ Rails.autoloaders.logger = Logger.new("#{Rails.root}/log/autoloading.log")
     config.generators.system_tests = nil
 
     config.logger = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
+    config.telegram_bot_token = ENV['TELEGRAM_BOT_TOKEN'].to_s.strip
   end
 end

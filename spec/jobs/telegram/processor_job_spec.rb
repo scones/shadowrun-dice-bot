@@ -60,7 +60,7 @@ RSpec.describe Telegram::ProcessorJob, type: :job do
 
     it 'creates a telegram response from the bot' do
       expect_any_instance_of(Bot::Parser).to receive(:response).and_return('foo')
-      expect(Telegram::SenderJob).to receive(:perform_later).with({message: 'foo', chat_id: 526779048})
+      expect(Telegram::SenderJob).to receive(:perform_later).with({text: 'foo', chat_id: 526779048})
 
       perform_enqueued_jobs { job }
     end

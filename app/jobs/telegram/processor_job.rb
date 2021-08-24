@@ -6,7 +6,7 @@ class Telegram::ProcessorJob < ActiveJob::Base
     telegram = Telegram::Parser.new params
     bot = Bot::Parser.new telegram.message
 
-    Telegram::SenderJob.perform_later message: bot.response, chat_id: telegram.chat_id
+    Telegram::SenderJob.perform_later text: bot.response, chat_id: telegram.chat_id
   end
 
 end

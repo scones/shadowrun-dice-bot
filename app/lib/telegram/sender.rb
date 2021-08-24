@@ -1,18 +1,16 @@
 require 'net/http'
 require 'net/https'
 
-module Telegram
-  class Telegram::Sender
+class Telegram::Sender
 
-    def initialize response
-      @response = response
-      @token = Rails.application.config.telegram_token
-    end
-
-    def send
-      uri = URI("https://api.telegram.org/bot#{@token}/sendMessage")
-      Net::HTTP.post_form(uri, response.params)
-    end
-
+  def initialize params
+    @params = params
+    @token = Rails.application.config.telegram_bot_token
   end
+
+  def send
+    uri = URI("https://api.telegram.org/bot#{@token}/sendMessage")
+    Net::HTTP.post_form(uri, @params)
+  end
+
 end

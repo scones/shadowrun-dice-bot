@@ -1,8 +1,8 @@
 
 class Bot::Commands::OpposedRoll < Bot::Commands::Abstract
 
-  def help_message
-    <<~HELP
+  def self.help_message
+    message = <<~HELP
       /#{self.command_name} [PROTAGONIST_DICE] [ANTAGONIST_DICE]
       with /#{self.command_name} you can roll your dice against someone / something.
     HELP
@@ -10,23 +10,20 @@ class Bot::Commands::OpposedRoll < Bot::Commands::Abstract
 
   def execute
     raise Bot::Parser::MISFORMATTED_COMMAND unless 2 <= @arguments.size
-    protagonist_dice_count = @arguments.shift.to_i
-    antagagonist_dice_count = @arguments.shift.to_i
 
-    protagonist_dice_rolls = dice.roll_6 protagonist_dice_count
-    antagonist_dice_rolls = dice.roll_6 antagagonist_dice_count
-    protagonist_hits = protagonist_dice_rolls.select{|roll| roll >= 5 }.count
-    antagonist_hits = antagonist_dice_rolls.select{|roll| roll >= 5 }.count
-    net_hits = protagonist_hits - antagonist_hits
+    protagonist_roll = Bot::Roll.new @arguments.shift
+    antagonist_roll = Bot::Roll.new @arguments.shift
+    net_hits = protagonist_roll.hits - antagonist_roll.hits
+
     response = <<~RESULT
-      /#{command_name} #{protagonist_dice_count} #{antagagonist_dice_count}
-      P: #{protagonist_dice_rolls.join(' ')}
-      A: #{antagonist_dice_rolls.join(' ')}
+      /#{self.class.command_name} #{protagonist_roll.dice_count_formatted} #{antagonist_roll.dice_count_formatted}
+      P: #{protagonist_roll.format_as_string}
+      A: #{antagonist_roll.format_as_string}
       Net Hits: #{net_hits}
     RESULT
 
     response += "\nfailure\n" if net_hits < 0
-    response
+    post_format response
   end
 
 end

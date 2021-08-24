@@ -2,19 +2,16 @@
 class Bot::Commands::Help < Bot::Commands::Abstract
 
   def execute
-    message = commands.inject([]) do |target, command|
-      help = command.help_message
-      target << help if help
-      target
-    end.join("\n\n")
-    {message: message, chat_id: @user.telegram_user_id}
+    commands.map(&:help_message).join("\n\n")
   end
 
   def self.help_message
+    "/#{self.command_name} print this"
   end
 
   def commands
-    Bot::Commands.constants.map do |c|
+    command_classes = Bot::Commands.constants - [:Abstract]
+    command_classes.map do |c|
       Bot::Commands.const_get(c)
     end.select do |c|
       c.is_a? Class
